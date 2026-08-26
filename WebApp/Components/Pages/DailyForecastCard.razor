@@ -1,0 +1,75 @@
+﻿@using Domain.Entities
+
+<div class="card" style="border-radius: 16px;">
+    <div class="card-header bg-transparent">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-calendar3 me-2"></i>3-Day Forecast
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @foreach (var day in Data)
+            {
+                var isToday = day.Date == DateTime.Today;
+                var bgClass = isToday ? "bg-primary bg-opacity-10" : "bg-light";
+
+                <div class="col-md-4 mb-3">
+                    <div class="p-3 rounded-3 @bgClass">
+                        <h6 class="mb-0 @(isToday ? "text-primary" : "")">
+                            @if (isToday)
+                            {
+                                <span>Today</span>
+                            }
+                            else if (day.Date == DateTime.Today.AddDays(1))
+                            {
+                                <span>Tomorrow</span>
+                            }
+                            else
+                            {
+                                <span>@day.Date.DayOfWeek</span>
+                            }
+                        </h6>
+                        <small class="text-muted">@day.Date.ToString("dd MMM yyyy")</small>
+
+                        <div class="d-flex align-items-center gap-3 my-2">
+                            <img src="@day.ConditionIcon" style="width: 50px; height: 50px;" />
+                            <div>
+                                <h5 class="mb-0 fw-bold">@day.MaxTempC°C</h5>
+                                <small class="text-muted">@day.MinTempC°C</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">@day.ConditionText</div>
+
+                        <div class="row small">
+                            <div class="col-6">
+                                <span class="text-muted d-block"><i class="bi bi-droplet me-1"></i>Humidity</span>
+                                <span>@day.AvgHumidity%</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted d-block"><i class="bi bi-wind me-1"></i>Wind</span>
+                                <span>@day.MaxWindKph km/h</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted d-block"><i class="bi bi-cloud-rain me-1"></i>Rain</span>
+                                <span>@day.DailyChanceOfRain%</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="text-muted d-block"><i class="bi bi-sun me-1"></i>UV</span>
+                                <span>@day.Uv</span>
+                            </div>
+                            <div class="col-12 mt-1">
+                                <span class="text-muted d-block"><i class="bi bi-sunrise me-1"></i>Sunrise / Sunset</span>
+                                <span>@day.Sunrise / @day.Sunset</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<DailyForecast> Data { get; set; } = new();
+}

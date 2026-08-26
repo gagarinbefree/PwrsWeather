@@ -1,0 +1,56 @@
+﻿@using Domain.Entities
+
+<div class="card h-100 text-white" style="background: linear-gradient(135deg, #1a237e, #283593); border-radius: 16px;">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h5 class="card-title text-white-50">@Location?.Name, @Location?.Country</h5>
+                <h6 class="card-subtitle text-white-50">@Location?.Region</h6>
+                <small class="text-white-50 d-block mt-2">
+                    <i class="bi bi-clock me-1"></i> @Data?.LastUpdated.ToString("HH:mm")
+                </small>
+            </div>
+            <div class="text-end">
+                <h2 class="fw-light text-white">@Data?.TemperatureC°C</h2>
+                <small class="text-white-50">
+                    <img src="@Data?.ConditionIcon" style="width: 24px; height: 24px; vertical-align: middle;" />
+                    @Data?.ConditionText
+                </small>
+            </div>
+        </div>
+
+        <hr class="border-light opacity-25" />
+
+        <div class="row">
+            <div class="col-6">
+                <small class="text-white-50 d-block"><i class="bi bi-thermometer-half me-1"></i>Feels Like</small>
+                <span class="text-white">@Data?.FeelsLikeC°C</span>
+            </div>
+            <div class="col-6">
+                <small class="text-white-50 d-block"><i class="bi bi-droplet me-1"></i>Humidity</small>
+                <span class="text-white">@Data?.Humidity%</span>
+            </div>
+            <div class="col-6">
+                <small class="text-white-50 d-block"><i class="bi bi-wind me-1"></i>Wind</small>
+                <span class="text-white">@Data?.WindKph km/h @Data?.WindDir</span>
+            </div>
+            <div class="col-6">
+                <small class="text-white-50 d-block"><i class="bi bi-sun me-1"></i>UV Index</small>
+                <span class="text-white">@Data?.Uv</span>
+            </div>
+            <div class="col-6">
+                <small class="text-white-50 d-block"><i class="bi bi-speedometer2 me-1"></i>Pressure</small>
+                <span class="text-white">@Data?.PressureMb mb</span>
+            </div>
+            <div class="col-6">
+                <small class="text-white-50 d-block"><i class="bi bi-eye me-1"></i>Visibility</small>
+                <span class="text-white">@Data?.VisibilityKm km</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public CurrentWeather? Data { get; set; }
+    [Parameter] public WeatherData? Location { get; set; }
+}

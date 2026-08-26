@@ -1,0 +1,42 @@
+﻿@using Domain.Entities
+
+<div class="card h-100" style="border-radius: 16px;">
+    <div class="card-header bg-transparent">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-clock-history me-2"></i>Hourly Forecast
+            <small class="text-muted ms-2">Today &amp; Tomorrow</small>
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="d-flex overflow-auto" style="gap: 15px; padding: 10px 0; scrollbar-width: thin;">
+            @foreach (var hour in Data)
+            {
+                var isCurrentHour = hour.Time.Hour == DateTime.Now.Hour && hour.Time.Date == DateTime.Today;
+                var cardStyle = isCurrentHour ? "background: linear-gradient(135deg, #1a237e, #283593); color: white;" : "";
+
+                <div class="text-center flex-shrink-0" style="min-width: 80px; padding: 10px; border-radius: 10px; @cardStyle">
+                    <div>@hour.Time.ToString("HH:mm")</div>
+                    <div class="my-2">
+                        <img src="@hour.ConditionIcon" style="width: 40px; height: 40px;" />
+                    </div>
+                    <div class="fw-bold">@hour.TemperatureC°C</div>
+                    <div class="small @(isCurrentHour ? "text-white-50" : "text-muted")">@hour.ConditionText</div>
+                    @if (hour.ChanceOfRain > 0)
+                    {
+                        <div class="small @(isCurrentHour ? "text-white-50" : "text-muted")">
+                            <i class="bi bi-droplet me-1"></i>@hour.ChanceOfRain%
+                        </div>
+                    }
+                    @if (isCurrentHour)
+                    {
+                        <span class="badge bg-primary bg-opacity-25 text-white mt-1">Now</span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<HourlyForecast> Data { get; set; } = new();
+}

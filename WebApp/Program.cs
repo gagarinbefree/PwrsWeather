@@ -1,36 +1,38 @@
+using Application.Extensions;
+using Infrastructure.Extensions;
 using WebApp.Components;
 
-namespace WebApp
+var builder = WebApplication.CreateBuilder(args);
+
+// Add application services (MediatR)
+builder.Services.AddApplication();
+
+// Add infrastructure services
+var baseUrl = builder.Configuration["WeatherApi:BaseUrl"]
+    ?? throw new InvalidOperationException("WeatherApi:BaseUrl is not configured in appsettings.json");
+//var apiKey = builder.Configuration["WeatherApi:ApiKey"]
+//   ?? throw new InvalidOperationException("WeatherApi:ApiKey is not configured in appsettings.json");
+
+builder.Services.AddInfrastructure(baseUrl);
+
+// Add Blazor services
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-            builder.Services.AddRazorComponents()
-                .AddInteractiveServerComponents();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAntiforgery();
-
-            app.MapStaticAssets();
-            app.MapRazorComponents<App>()
-                .AddInteractiveServerRenderMode();
-
-            app.Run();
-        }
-    }
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseHsts();
 }
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseAntiforgery();
+
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+
+app.Run();
