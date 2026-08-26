@@ -41,3 +41,6 @@
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [Visual Studio 2022](https://visualstudio.microsoft.com/) или другой редактор
 - API ключ от [WeatherAPI.com](https://www.weatherapi.com/)
+
+<img width="743" height="834" alt="image" src="https://github.com/user-attachments/assets/6a07e46e-c6ea-433c-8056-f1d5962e0826" />
+
