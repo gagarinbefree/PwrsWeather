@@ -1,4 +1,4 @@
-[![.NET Tests](https://github.com/YOUR_USERNAME/PwrsWeather/actions/workflows/dotnet-tests.yml/badge.svg)](https://github.com/YOUR_USERNAME/PwrsWeather/actions/workflows/dotnet-tests.yml)
+[![.NET Tests](https://github.com/gagarinbefree/PwrsWeather/actions/workflows/dotnet-tests.yml/badge.svg)](https://github.com/YOUR_USERNAME/PwrsWeather/actions/workflows/dotnet-tests.yml)
 
 # Weather App
 Погодное веб-приложение на .NET 10 + Blazor с использованием Clean Architecture, CQRS/MediatR и Bootstrap.
