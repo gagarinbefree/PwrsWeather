@@ -22,10 +22,9 @@
 - ✅ Чистая архитектура (Clean Architecture)
 - ✅ CQRS с MediatR
 - ✅ AutoMapper для маппинга DTO → Domain
-- ✅ Интерактивный Blazor (InteractiveServer)
-- ✅ Bootstrap 5 + Bootstrap Icons
+- ✅ Blazor
+- ✅ Bootstrap 5 для UI
 - ✅ Обработка ошибок с кнопкой Retry
-- ✅ Адаптивный дизайн
 
 ## Технологии
 | Технология | Версия |
