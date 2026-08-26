@@ -129,27 +129,27 @@ public class WeatherDataServiceTests
             Forecast = new ForecastDto
             {
                 ForecastDay = new List<ForecastDayDto>
+            {
+                new ForecastDayDto
                 {
-                    new ForecastDayDto
+                    Date = today.ToString("yyyy-MM-dd"),
+                    Hour = new List<HourDto>
                     {
-                        Date = today.ToString("yyyy-MM-dd"),
-                        Hour = new List<HourDto>
-                        {
-                            new HourDto { Time = today.AddHours(8).ToString("yyyy-MM-dd HH:mm"), TempC = 18.0 },
-                            new HourDto { Time = today.AddHours(12).ToString("yyyy-MM-dd HH:mm"), TempC = 22.0 },
-                            new HourDto { Time = today.AddHours(16).ToString("yyyy-MM-dd HH:mm"), TempC = 20.0 }
-                        }
-                    },
-                    new ForecastDayDto
+                        new HourDto { Time = today.AddHours(8).ToString("yyyy-MM-dd HH:mm"), TempC = 18.0 },
+                        new HourDto { Time = today.AddHours(12).ToString("yyyy-MM-dd HH:mm"), TempC = 22.0 },
+                        new HourDto { Time = today.AddHours(16).ToString("yyyy-MM-dd HH:mm"), TempC = 20.0 }
+                    }
+                },
+                new ForecastDayDto
+                {
+                    Date = tomorrow.ToString("yyyy-MM-dd"),
+                    Hour = new List<HourDto>
                     {
-                        Date = tomorrow.ToString("yyyy-MM-dd"),
-                        Hour = new List<HourDto>
-                        {
-                            new HourDto { Time = tomorrow.AddHours(6).ToString("yyyy-MM-dd HH:mm"), TempC = 15.0 },
-                            new HourDto { Time = tomorrow.AddHours(12).ToString("yyyy-MM-dd HH:mm"), TempC = 24.0 }
-                        }
+                        new HourDto { Time = tomorrow.AddHours(6).ToString("yyyy-MM-dd HH:mm"), TempC = 15.0 },
+                        new HourDto { Time = tomorrow.AddHours(12).ToString("yyyy-MM-dd HH:mm"), TempC = 24.0 }
                     }
                 }
+            }
             }
         };
 
@@ -157,14 +157,23 @@ public class WeatherDataServiceTests
 
         Assert.NotNull(result);
         Assert.NotNull(result.HourlyForecast);
-        Assert.Equal(2, result.HourlyForecast.Count);
 
-        foreach (var hour in result.HourlyForecast)
-        {
+        // Проверяем количество часов: сегодня (>= now) + все завтра
+        var expectedCount = forecast.Forecast.ForecastDay
+            .SelectMany(d => d.Hour)
+            .Count(h =>
+            {
+                var time = DateTime.Parse(h.Time);
+                return (time.Date == today && time >= now) || time.Date == tomorrow;
+            });
+
+        Assert.Equal(expectedCount, result.HourlyForecast.Count);
+
+        // Проверяем, что все часы корректно отфильтрованы
+        Assert.All(result.HourlyForecast, h =>
             Assert.True(
-                (hour.Time.Date == today && hour.Time >= now) ||
-                hour.Time.Date == tomorrow,
-                $"Hour {hour.Time} is not in expected range");
-        }
+                (h.Time.Date == today && h.Time >= now) ||
+                h.Time.Date == tomorrow,
+                $"Hour {h.Time} is not in expected range"));
     }
 }
