@@ -1,8 +1,9 @@
-﻿using Application.Dtos.WeatherApi;
+﻿using Application.Dtos;
 
 namespace Application.Interfaces;
 
 public interface IWeatherApiClient
 {
-    Task<WeatherDataDto> GetForecastAsync(double lat, double lon, int days);
+    Task<CurrentResponseDto> GetCurrentWeatherAsync();
+    Task<ForecastResponseDto> GetForecastAsync();
 }

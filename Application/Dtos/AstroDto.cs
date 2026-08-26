@@ -1,9 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
+namespace Application.Dtos;
 
-namespace Application.Dtos.WeatherApi;
-
-public class AstroInfoDto
+public class AstroDto
 {
     [JsonPropertyName("sunrise")]
     public string Sunrise { get; set; } = string.Empty;

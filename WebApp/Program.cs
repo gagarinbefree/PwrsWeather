@@ -1,27 +1,27 @@
 using Application.Extensions;
+using Infrastructure.Configuration;
 using Infrastructure.Extensions;
 using WebApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add application services (MediatR)
 builder.Services.AddApplication();
 
-// Add infrastructure services
-var baseUrl = builder.Configuration["WeatherApi:BaseUrl"]
-    ?? throw new InvalidOperationException("WeatherApi:BaseUrl is not configured in appsettings.json");
-//var apiKey = builder.Configuration["WeatherApi:ApiKey"]
-//   ?? throw new InvalidOperationException("WeatherApi:ApiKey is not configured in appsettings.json");
+var options = new WeatherApiOptions
+{
+    BaseUrl = builder.Configuration["WeatherApi:BaseUrl"] ?? "",
+    ApiKey = builder.Configuration["WeatherApi:ApiKey"] ?? "",
+    DefaultLocation = builder.Configuration["WeatherApi:DefaultLocation"] ?? "",
+    ForecastDays = int.Parse(builder.Configuration["WeatherApi:ForecastDays"] ?? "3")
+};
 
-builder.Services.AddInfrastructure(baseUrl);
+builder.Services.AddInfrastructure(options);
 
-// Add Blazor services
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);

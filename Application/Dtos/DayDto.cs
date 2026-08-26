@@ -1,39 +1,33 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Application.Dtos.WeatherApi;
+namespace Application.Dtos;
 
-public class DayInfoDto
+public class DayDto
 {
     [JsonPropertyName("maxtemp_c")]
-    public double MaxTempC { get; set; }
+    public double MaxtempC { get; set; }
 
     [JsonPropertyName("mintemp_c")]
-    public double MinTempC { get; set; }
+    public double MintempC { get; set; }
 
     [JsonPropertyName("avgtemp_c")]
-    public double AvgTempC { get; set; }
+    public double AvgtempC { get; set; }
 
     [JsonPropertyName("condition")]
     public ConditionDto Condition { get; set; } = new();
 
     [JsonPropertyName("maxwind_kph")]
-    public double MaxWindKph { get; set; }
+    public double MaxwindKph { get; set; }
 
     [JsonPropertyName("totalprecip_mm")]
-    public double TotalPrecipitationMm { get; set; }
+    public double TotalprecipMm { get; set; }
 
     [JsonPropertyName("avghumidity")]
-    public int AvgHumidity { get; set; }
+    public int Avghumidity { get; set; }
 
     [JsonPropertyName("uv")]
     public double Uv { get; set; }
 
     [JsonPropertyName("daily_chance_of_rain")]
     public int DailyChanceOfRain { get; set; }
-
-    [JsonPropertyName("sunrise")]
-    public string Sunrise { get; set; } = string.Empty;
-
-    [JsonPropertyName("sunset")]
-    public string Sunset { get; set; } = string.Empty;
 }

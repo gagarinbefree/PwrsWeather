@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Infrastructure.Clients;
+using Infrastructure.Configuration;
 using Infrastructure.Mappers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,15 +10,15 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        string baseUrl)
+        WeatherApiOptions options)
     {
-        // Register HttpClient
+        services.AddSingleton(options);
+
         services.AddHttpClient<IWeatherApiClient, WeatherApiClient>(client =>
         {
-            client.BaseAddress = new Uri(baseUrl);
+            client.BaseAddress = new Uri(options.BaseUrl);
         });
 
-        // Register AutoMapper
         services.AddAutoMapper(cfg =>
         {
             cfg.AddProfile<WeatherMappingProfile>();

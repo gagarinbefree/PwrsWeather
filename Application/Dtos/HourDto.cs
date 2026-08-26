@@ -1,18 +1,17 @@
 ﻿using System.Text.Json.Serialization;
-using Domain.Enums;
 
-namespace Application.Dtos.WeatherApi;
+namespace Application.Dtos;
 
-public class HourlyForecastDto
+public class HourDto
 {
     [JsonPropertyName("time")]
-    public DateTime Time { get; set; }
+    public string Time { get; set; } = string.Empty;
 
     [JsonPropertyName("temp_c")]
-    public double TemperatureC { get; set; }
+    public double TempC { get; set; }
 
     [JsonPropertyName("feelslike_c")]
-    public double FeelsLikeC { get; set; }
+    public double FeelslikeC { get; set; }
 
     [JsonPropertyName("condition")]
     public ConditionDto Condition { get; set; } = new();
@@ -27,7 +26,7 @@ public class HourlyForecastDto
     public int Humidity { get; set; }
 
     [JsonPropertyName("precip_mm")]
-    public double PrecipitationMm { get; set; }
+    public double PrecipMm { get; set; }
 
     [JsonPropertyName("chance_of_rain")]
     public int ChanceOfRain { get; set; }

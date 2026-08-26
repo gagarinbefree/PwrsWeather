@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Application.Dtos.WeatherApi;
+namespace Application.Dtos;
 
 public class ConditionDto
 {

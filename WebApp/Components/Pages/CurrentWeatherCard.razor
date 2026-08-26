@@ -11,7 +11,7 @@
                 </small>
             </div>
             <div class="text-end">
-                <h2 class="fw-light text-white">@Data?.TemperatureC°C</h2>
+                <h2 class="fw-light text-white">@Data?.TempC°C</h2>
                 <small class="text-white-50">
                     <img src="@Data?.ConditionIcon" style="width: 24px; height: 24px; vertical-align: middle;" />
                     @Data?.ConditionText
@@ -24,7 +24,7 @@
         <div class="row">
             <div class="col-6">
                 <small class="text-white-50 d-block"><i class="bi bi-thermometer-half me-1"></i>Feels Like</small>
-                <span class="text-white">@Data?.FeelsLikeC°C</span>
+                <span class="text-white">@Data?.FeelslikeC°C</span>
             </div>
             <div class="col-6">
                 <small class="text-white-50 d-block"><i class="bi bi-droplet me-1"></i>Humidity</small>
@@ -44,7 +44,7 @@
             </div>
             <div class="col-6">
                 <small class="text-white-50 d-block"><i class="bi bi-eye me-1"></i>Visibility</small>
-                <span class="text-white">@Data?.VisibilityKm km</span>
+                <span class="text-white">@Data?.VisKm km</span>
             </div>
         </div>
     </div>

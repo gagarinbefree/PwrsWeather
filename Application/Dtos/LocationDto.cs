@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Application.Dtos.WeatherApi;
+namespace Application.Dtos;
 
-public class WeatherDataDto
+public class LocationDto
 {
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
@@ -20,14 +20,8 @@ public class WeatherDataDto
     public double Lon { get; set; }
 
     [JsonPropertyName("tz_id")]
-    public string Timezone { get; set; } = string.Empty;
+    public string TzId { get; set; } = string.Empty;
 
     [JsonPropertyName("localtime")]
-    public DateTime LocalTime { get; set; }
-
-    [JsonPropertyName("current")]
-    public CurrentWeatherDto? Current { get; set; }
-
-    public List<HourlyForecastDto> HourlyForecast { get; set; } = new();
-    public List<DailyForecastDto> DailyForecast { get; set; } = new();
+    public string LocalTime { get; set; } = string.Empty;
 }

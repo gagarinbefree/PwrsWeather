@@ -1,64 +1,73 @@
 ﻿@page "/"
+@using Application.Dtos
 @using Application.Queries
+@using AutoMapper
 @using Domain.Entities
 @using MediatR
 
-@attribute [StreamRendering]
+@rendermode InteractiveServer
 
 @inject IMediator Mediator
+@inject IMapper Mapper
 
-<div class="row">
-    @if (IsLoading)
-    {
-        <div class="text-center py-5">
-            <div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
+@if (IsLoading)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
+            <span class="visually-hidden">Loading...</span>
         </div>
-    }
-    else if (ErrorMessage != null)
-    {
+    </div>
+}
+else if (ErrorMessage != null)
+{
+    <div class="row">
         <div class="col-12">
             <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-exclamation-triangle-fill fs-4"></i>
                     <span>@ErrorMessage</span>
                 </div>
-                <button class="btn btn-light btn-sm" @onclick="LoadWeather">
+                <button class="btn btn-light btn-sm" type="button" @onclick="OnRetryClick">
                     <i class="bi bi-arrow-repeat me-1"></i> Retry
                 </button>
             </div>
         </div>
-    }
-    else if (WeatherData != null)
-    {
-        <!-- Current Weather -->
+    </div>
+}
+else if (WeatherData != null)
+{
+    <div class="row">
         <div class="col-lg-4 col-md-6 mb-4">
             <CurrentWeatherCard Data="@WeatherData.Current" Location="@WeatherData" />
         </div>
 
-        <!-- Hourly Forecast -->
         <div class="col-lg-8 col-md-6 mb-4">
             <HourlyForecastCard Data="@WeatherData.HourlyForecast" />
         </div>
 
-        <!-- Daily Forecast -->
         <div class="col-12">
             <DailyForecastCard Data="@WeatherData.DailyForecast" />
         </div>
-    }
-</div>
+    </div>
+}
 
 @code {
     private WeatherData? WeatherData { get; set; }
     private bool IsLoading { get; set; } = true;
     private string? ErrorMessage { get; set; }
+    private bool _initialized = false;
 
-    // Москва
-    private const double Latitude = 55.7558;
-    private const double Longitude = 37.6173;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_initialized)
+        {
+            _initialized = true;
+            await LoadWeather();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
 
-    protected override async Task OnInitializedAsync()
+    private async Task OnRetryClick()
     {
         await LoadWeather();
     }
@@ -71,20 +80,62 @@
             ErrorMessage = null;
             StateHasChanged();
 
-            WeatherData = await Mediator.Send(new GetWeatherQuery(Latitude, Longitude));
+            Console.WriteLine("Loading weather...");
+
+            var currentWeather = await Mediator.Send(new GetCurrentWeatherQuery());
+            var forecast = await Mediator.Send(new GetForecastQuery());
+
+            WeatherData = MapToWeatherData(currentWeather, forecast);
+
+            Console.WriteLine("Weather loaded successfully");
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
             ErrorMessage = "Failed to connect to weather service. Please check your internet connection.";
+            Console.WriteLine($"HttpRequestException: {ex.Message}");
         }
         catch (Exception ex)
         {
             ErrorMessage = $"An error occurred: {ex.Message}";
+            Console.WriteLine($"Exception: {ex.Message}");
         }
         finally
         {
             IsLoading = false;
             StateHasChanged();
         }
+    }
+
+    private WeatherData MapToWeatherData(CurrentResponseDto current, ForecastResponseDto forecast)
+    {
+        var now = DateTime.Now;
+        var today = now.Date;
+        var tomorrow = today.AddDays(1);
+
+        var weatherData = Mapper.Map<WeatherData>(current.Location);
+        weatherData.Current = Mapper.Map<CurrentWeather>(current.Current);
+
+        var filteredHours = forecast.Forecast.ForecastDay
+            .SelectMany(d => d.Hour)
+            .Where(h =>
+            {
+                if (string.IsNullOrEmpty(h.Time))
+                    return false;
+
+                var time = DateTime.Parse(h.Time);
+                return (time.Date == today && time >= now) || time.Date == tomorrow;
+            })
+            .OrderBy(h => DateTime.Parse(h.Time))
+            .ToList();
+
+        weatherData.HourlyForecast = Mapper.Map<List<HourlyForecast>>(filteredHours);
+
+        var dailyForecast = forecast.Forecast.ForecastDay
+            .Take(3)
+            .ToList();
+
+        weatherData.DailyForecast = Mapper.Map<List<DailyForecast>>(dailyForecast);
+
+        return weatherData;
     }
 }

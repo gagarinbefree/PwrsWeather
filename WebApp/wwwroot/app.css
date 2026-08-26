@@ -3,7 +3,6 @@ html, body {
     background-color: #f5f7fa;
 }
 
-/* Стили для скроллбара */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -23,7 +22,6 @@ html, body {
         background: #555;
     }
 
-/* Стили для карточек */
 .card {
     border: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -34,12 +32,10 @@ html, body {
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     }
 
-    /* Иконки в карточках */
     .card .bi {
         font-size: 1.1em;
     }
 
-/* Адаптив для мобильных устройств */
 @media (max-width: 768px) {
     .container {
         padding-left: 12px;
