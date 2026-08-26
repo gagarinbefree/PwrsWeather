@@ -5,7 +5,7 @@
 [![AutoMapper](https://img.shields.io/badge/AutoMapper-13.0.1-0078D4)](https://automapper.org/)
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3.0-7952B3?logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
 
-# Weather App
+# PwrsWeather
 Погодное веб-приложение на .NET 10 + Blazor с использованием Clean Architecture, CQRS/MediatR и Bootstrap.
 
 ## Установка и запуск
