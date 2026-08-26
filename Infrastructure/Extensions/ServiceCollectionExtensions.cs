@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
 
         services.AddAutoMapper(cfg =>
         {
-            cfg.AddProfile<WeatherMappingProfile>();
+            cfg.AddProfile<MappingProfile>();
         });
 
         return services;

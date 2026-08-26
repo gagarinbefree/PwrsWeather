@@ -1,14 +1,14 @@
 ﻿@page "/"
 @using Application.Dtos
 @using Application.Queries
-@using AutoMapper
+@using Application.Services
 @using Domain.Entities
 @using MediatR
 
 @rendermode InteractiveServer
 
 @inject IMediator Mediator
-@inject IMapper Mapper
+@inject IWeatherDataService WeatherDataService
 
 @if (IsLoading)
 {
@@ -55,13 +55,13 @@ else if (WeatherData != null)
     private WeatherData? WeatherData { get; set; }
     private bool IsLoading { get; set; } = true;
     private string? ErrorMessage { get; set; }
-    private bool _initialized = false;
+    private bool Initialized = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && !_initialized)
+        if (firstRender && !Initialized)
         {
-            _initialized = true;
+            Initialized = true;
             await LoadWeather();
         }
         await base.OnAfterRenderAsync(firstRender);
@@ -78,14 +78,15 @@ else if (WeatherData != null)
         {
             IsLoading = true;
             ErrorMessage = null;
+            WeatherData = null;
             StateHasChanged();
 
             Console.WriteLine("Loading weather...");
 
-            var currentWeather = await Mediator.Send(new GetCurrentWeatherQuery());
+            var current = await Mediator.Send(new GetCurrentWeatherQuery());
             var forecast = await Mediator.Send(new GetForecastQuery());
 
-            WeatherData = MapToWeatherData(currentWeather, forecast);
+            WeatherData = WeatherDataService.MapToWeatherData(current, forecast);
 
             Console.WriteLine("Weather loaded successfully");
         }
@@ -104,38 +105,5 @@ else if (WeatherData != null)
             IsLoading = false;
             StateHasChanged();
         }
-    }
-
-    private WeatherData MapToWeatherData(CurrentResponseDto current, ForecastResponseDto forecast)
-    {
-        var now = DateTime.Now;
-        var today = now.Date;
-        var tomorrow = today.AddDays(1);
-
-        var weatherData = Mapper.Map<WeatherData>(current.Location);
-        weatherData.Current = Mapper.Map<CurrentWeather>(current.Current);
-
-        var filteredHours = forecast.Forecast.ForecastDay
-            .SelectMany(d => d.Hour)
-            .Where(h =>
-            {
-                if (string.IsNullOrEmpty(h.Time))
-                    return false;
-
-                var time = DateTime.Parse(h.Time);
-                return (time.Date == today && time >= now) || time.Date == tomorrow;
-            })
-            .OrderBy(h => DateTime.Parse(h.Time))
-            .ToList();
-
-        weatherData.HourlyForecast = Mapper.Map<List<HourlyForecast>>(filteredHours);
-
-        var dailyForecast = forecast.Forecast.ForecastDay
-            .Take(3)
-            .ToList();
-
-        weatherData.DailyForecast = Mapper.Map<List<DailyForecast>>(dailyForecast);
-
-        return weatherData;
     }
 }

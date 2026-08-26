@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Extensions;
 
@@ -10,7 +11,9 @@ public static class ServiceCollectionExtensions
         {
             cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
         });
-        
+
+        services.AddScoped<IWeatherDataService, WeatherDataService>();
+
         return services;
     }
 }
